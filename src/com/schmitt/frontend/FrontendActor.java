@@ -4,33 +4,35 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.routing.FromConfig;
+import scala.concurrent.duration.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class FrontendActor extends UntypedActor {
   LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-  List<ActorRef> backends = new ArrayList<ActorRef>();
+
+  ActorRef router = getContext().actorOf(FromConfig.getInstance().props(), "router");
+
+  @Override
+  public void preStart() throws Exception {
+    getContext()
+        .system()
+        .scheduler()
+        .schedule(
+            Duration.Zero(),
+            Duration.create(2, TimeUnit.SECONDS),
+            router,
+            "HalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHalloHallo",
+            getContext().dispatcher(), getSelf());
+  }
 
   @Override
   public void onReceive(Object message) throws Exception {
     if (message instanceof String) {
-      String messageString = (String) message;
-      switch (messageString) {
-        case "Welcome":
-          getSender().tell("Mahlzeit", getSelf());
-          log.error(messageString);
-          break;
-        case "Bye":
-          getSender().tell("Ciao", getSelf());
-          log.error(messageString);
-          break;
-        default:
-          break;
-      }
+      log.info("From: " + getSender());
     } else {
       unhandled(message);
     }
   }
-
 }

@@ -21,14 +21,13 @@ public class Frontend {
 
     // Override the configuration of the port
     Config config =
-        ConfigFactory.parseString("akka.remote.netty.tcp.port=" + ports[2]).withFallback(
-            ConfigFactory.load("frontend"));
+        ConfigFactory.parseString("akka.remote.netty.tcp.port=" + ports[0]).withFallback(
+            ConfigFactory.load("router"));
 
     // Create an Akka system
-
     ActorSystem system = ActorSystem.create("ClusterSystem", config);
-    
+
     // Create an actor that handles cluster domain events
-    system.actorOf(Props.create(FrontendActor.class), "FrontendActor");
+    system.actorOf(Props.create(FrontendActor.class), "frontend");
   }
 }
